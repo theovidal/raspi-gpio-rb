@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
   s.name        = 'raspi-gpio'
   s.version     = '1.0.0'
-  s.licenses    = ['MIT']
-  s.summary     = "Raspberry Pi GPIO interface."
-  s.description = "An interface to interact with GPIO pins of the Raspberry Pi."
+  s.license     = 'MIT'
+  s.summary     = "🔌 Simple & light Raspberry Pi GPIO interface."
+  s.description = "A simple and light interface to interact with GPIO pins of the Raspberry Pi."
   s.authors     = ["Exybore"]
   s.email       = 'exybore@gmail.com'
   s.files       = ["lib/raspi-gpio.rb"]
