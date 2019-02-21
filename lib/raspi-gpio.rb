@@ -29,11 +29,14 @@ class GPIO
   def initialize(pin, mode = OUT)
     @pin = pin
     begin
-      File.open("#{LIB_PATH}/export", 'w') do |file|
+      File.open("#{LIB_PATH}/unexport", 'w') do |file|
         file.write(@pin)
       end
-    rescue Errno::EBUSY
-      # -
+    rescue Errno::EINVAL
+      # Do nothing - the pin is already unexported
+    end
+    File.open("#{LIB_PATH}/export", 'w') do |file|
+      file.write(@pin)
     end
     @mode = mode
   end
