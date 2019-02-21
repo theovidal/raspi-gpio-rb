@@ -1,40 +1,142 @@
-# raspi-gpio-rb
+<div align="center">
+  <img src="banner.png" alt="banner">
+  <h1>raspi-gpio-rb</h1>
+  <h3>🔌 A simple and light interface to interact with GPIO pins of the Raspberry Pi.</h3>
+</div>
 
-### 🔌 A simple and light interface to interact with GPIO pins of the Raspberry Pi.
+This library uses /sys/class/gpio interface to communicate with GPIO pins. It doesn't require super-user rights, therefore everyone on the OS can use it.
 
-Requires a Raspberry Pi with Raspbian installed on.
+- [📌 Requirements](#📌-requirements)
+- [🔧 Setup](#🔧-setup)
+  - [Quick installation](#quick-installation)
+  - [Gemfile](#gemfile)
+  - [Build](#build)
+- [⌨ Basic interactions](#⌨-basic-interactions)
+  - [Defining a pin](#defining-a-pin)
+  - [Reading pin's value](#reading-pins-value)
+  - [Outputing a value](#outputing-a-value)
+- [🔐 License](#🔐-license)
 
-Library has been tested on models : 3B
+## 📌 Requirements
+
+This library requires an updated version of Ruby, and a Raspberry Pi with Raspbian installed on.
+
+The raspi-gpio library has been tested on models : 3B
 
 ## 🔧 Setup
 
-Install the package with Ruby Gem :
+### Quick installation
+
+If you want to quickly test the library, you can install it using the `install` command of Ruby Gem.
 
 ```bash
 gem install raspi-gpio
 ```
 
-Then, include it in your project :
+### Gemfile
+
+If you setup the library for medium or big projects, it's recommended to write it in your Gemfile.
+
+```gemfile
+gem 'raspi-gpio', '~> 1.0'
+```
+
+After, use again the `install` command, but without the package name.
+
+```bash
+gem install
+```
+
+### Build
+
+You can also compile it by yourself. First, clone the repository.
+
+```bash
+git clone https://github.com/exybore/raspi-gpio-rb.git  # HTTP
+          git@github.com:exybore/raspi-gpio-rb.git      # SSH
+```
+
+Then, build the gemspec file to create the gem.
+
+```bash
+gem build ./raspi-gpio.gemspec
+```
+
+Finally, install it on your system.
+
+```bash
+gem install ./raspi-gpio-1.x.x.gem
+```
+
+## ⌨ Basic interactions
+
+First of all, we must include the library in our project. That can be achieved really easily with the `require` keyword.
 
 ```ruby
 require 'raspi-gpio'
+
+# ...
 ```
 
-## ⌨ Playing around
+### Defining a pin
+
+A GPIO pin is defined with three things :
+
+- a pin number (the number of total pins depend on your Raspberry model)
+- a direction (in or out)
+- a value (low or high)
+
+The `GPIO` class is the way the library provides to register our pins. The initialization method takes 2 arguments :
+
+- the pin number to use
+- the direction (default : out)
+
+We can use the `OUT` and `IN` constants for the direction.
 
 ```ruby
-# Defining our GPIO pin with pin number and mode (IN / OUT)
-pin = GPIO.new 9, OUT
-
-# Setting values
-pin.set_value HIGH # Power
-pin.set_value LOW  # No power
-
-# Reading the value of a pin
-pin.set_mode IN
-puts pin.get_value # 1 or 0
+pin = GPIO.new(9, OUT)
 ```
 
-## 🔬 Behind the library
+The direction of a pin can be changed at any point of the code using the `set_mode` method.
 
-This Ruby gem uses /sys/class/gpio interface to communicate with GPIO pins. It doesn't require super-user rights, so everyone on the OS can use it.
+```ruby
+pin.set_mode(IN)
+```
+
+### Reading pin's value
+
+To read the pin value, we're going to use the `get_value` method.
+
+```ruby
+pin.get_value
+
+# Example output : 0
+```
+
+- If the pin direction is `IN`, it'll read the power that goes into it
+- If it's in `OUT`, it'll output the value that we defined earlier
+
+### Outputing a value
+
+To set the value of a pin, the GPIO class has a `set_value` method that can take two values :
+
+- 0, no power (low)
+- 1, maximum power (high)
+
+The `LOW` and `HIGH` constants are here to let us set them while keeping code clarity.
+
+```ruby
+# Imagine that a LED is connected to our pin.
+
+pin.set_value(HIGH)
+
+# Output : the LED is on
+
+pin.set_value(LOW)
+
+# Output : the LED is off
+```
+
+## 🔐 License
+
+See the [license file](LICENSE).
