@@ -6,16 +6,16 @@
 
 This library uses /sys/class/gpio interface to communicate with GPIO pins. It doesn't require super-user rights, therefore everyone on the OS can use it.
 
-- [📌 Requirements](#📌-requirements)
-- [🔧 Setup](#🔧-setup)
+- [📌 Requirements](#-requirements)
+- [🔧 Setup](#-setup)
   - [Quick installation](#quick-installation)
   - [Gemfile](#gemfile)
   - [Build](#build)
-- [⌨ Basic interactions](#⌨-basic-interactions)
+- [⌨ Basic interactions](#-basic-interactions)
   - [Defining a pin](#defining-a-pin)
   - [Reading pin's value](#reading-pins-value)
   - [Outputing a value](#outputing-a-value)
-- [🔐 License](#🔐-license)
+- [🔐 License](#-license)
 
 ## 📌 Requirements
 
