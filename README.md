@@ -18,6 +18,8 @@ This library uses /sys/class/gpio interface to communicate with GPIO pins. It do
 - [🔐 License](#-license)
 
 ## 📌 Requirements
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fexybore%2Fraspi-gpio-rb.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fexybore%2Fraspi-gpio-rb?ref=badge_shield)
+
 
 This library requires an updated version of Ruby, and a Raspberry Pi with Raspbian installed on.
 
@@ -140,3 +142,6 @@ pin.set_value(LOW)
 ## 🔐 License
 
 See the [license file](LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fexybore%2Fraspi-gpio-rb.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fexybore%2Fraspi-gpio-rb?ref=badge_large)
