@@ -25,20 +25,12 @@ The raspi-gpio library has been tested on models : 3B
 
 ## 🔧 Setup
 
-### Quick installation
-
-If you want to quickly test the library, you can install it using the `install` command of Ruby Gem.
-
-```bash
-gem install raspi-gpio
-```
-
 ### Gemfile
 
 If you setup the library for medium or big projects, it's recommended to write it in your Gemfile.
 
 ```gemfile
-gem 'raspi-gpio', '~> 1.0'
+gem 'raspi-gpio', github: 'sergio1990/raspi-gpio-rb'
 ```
 
 After, use again the `install` command, but without the package name.
@@ -52,8 +44,8 @@ gem install
 You can also compile it by yourself. First, clone the repository.
 
 ```bash
-git clone https://github.com/exybore/raspi-gpio-rb.git  # HTTP
-          git@github.com:exybore/raspi-gpio-rb.git      # SSH
+git clone https://github.com/sergio1990/raspi-gpio-rb.git  # HTTP
+          git@github.com:sergio1990/raspi-gpio-rb.git      # SSH
 ```
 
 Then, build the gemspec file to create the gem.
@@ -94,13 +86,13 @@ The `GPIO` class is the way the library provides to register our pins. The initi
 We can use the `OUT` and `IN` constants for the direction.
 
 ```ruby
-pin = GPIO.new(9, OUT)
+pin = GPIO.new(9, GPIO::OUT)
 ```
 
 The direction of a pin can be changed at any point of the code using the `set_mode` method.
 
 ```ruby
-pin.set_mode(IN)
+pin.set_mode(GPIO::IN)
 ```
 
 ### Reading pin's value
@@ -128,11 +120,11 @@ The `LOW` and `HIGH` constants are here to let us set them while keeping code cl
 ```ruby
 # Imagine that a LED is connected to our pin.
 
-pin.set_value(HIGH)
+pin.set_value(GPIO::HIGH)
 
 # Output : the LED is on
 
-pin.set_value(LOW)
+pin.set_value(GPIO::LOW)
 
 # Output : the LED is off
 ```

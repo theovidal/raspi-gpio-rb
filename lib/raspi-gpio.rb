@@ -4,35 +4,37 @@
 #
 # @author exybore
 
-# GPIO core library path
-LIB_PATH = '/sys/class/gpio'
-
-# Shortcut for low pin value (0)
-LOW = 0
-
-# Shortcut for high pin value (1)
-HIGH = 1
-
-# Shortcut for 'in' pin mode
-IN = 'in'
-
-# Shortcut for 'out' pin mode
-OUT = 'out'
-
-# Exception to handle unknown pin mode (not IN or OUT)
-class UnknownMode < StandardError
-end
-
-# Exception to handle pin writing when not in OUT mode
-class NotOutMode < StandardError
-end
-
-# Exception to handle bad pin value (not LOW or HIGH)
-class BadValue < StandardError
-end
-
 # Main class, to manage GPIO pins
 class GPIO
+  # GPIO core library path
+  LIB_PATH = '/sys/class/gpio'
+
+  # Shortcut for low pin value (0)
+  LOW = 0
+
+  # Shortcut for high pin value (1)
+  HIGH = 1
+
+  # Shortcut for 'in' pin mode
+  IN = 'in'
+
+  # Shortcut for 'out' pin mode
+  OUT = 'out'
+
+  class BaseError < StandardError
+  end
+
+  # Exception to handle unknown pin mode (not IN or OUT)
+  class UnknownModeError < BaseError
+  end
+
+  # Exception to handle pin writing when not in OUT mode
+  class NotOutModeError < BaseError
+  end
+
+  # Exception to handle bad pin value (not LOW or HIGH)
+  class BadValueError < BaseError
+  end
 
   # Initialize the GPIO pin
   #
@@ -58,7 +60,7 @@ class GPIO
   # @param mode [String] pin mode : IN or OUT
   # @raise [UnknownMode] if the mode isn't IN or OUT
   def set_mode(mode)
-    raise UnknownMode, "gpio error : unknown mode #{mode}" unless mode == IN or mode == OUT
+    raise UnknownModeError, "gpio error : unknown mode #{mode}" unless mode == IN or mode == OUT
     File.open("#{LIB_PATH}/gpio#{@pin}/direction", 'w') do |file|
       file.write(mode)
     end
@@ -79,8 +81,8 @@ class GPIO
   # @raise [NotOutMode] if the pin isn't in OUT mode
   # @raise [BadValue] if the provided value isn't LOW or HIGH
   def set_value(v)
-    raise NotOutMode, "error : mode isn't OUT" unless @mode == OUT
-    raise BadValue, "error : bad pin value" unless v.between? 0,1
+    raise NotOutModeError, "error : mode isn't OUT" unless @mode == OUT
+    raise BadValueError, "error : bad pin value" unless v.between? 0,1
     File.open("#{LIB_PATH}/gpio#{@pin}/value", 'w') do |file|
       file.write(v)
     end
