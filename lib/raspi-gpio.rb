@@ -74,21 +74,22 @@ class GPIO
   # Read the value of the pin
   #
   # @return [Integer] pin's value : 0 or 1
-  def get_value
+  def value
     File.open("#{LIB_PATH}/gpio#{@pin}/value", 'r').read
   end
 
   # Set a value to the pin
   #   This method can only be used when the pin is in OUT mode
   #
-  # @param v [Integer] the value : LOW or HIGH
+  # @param new_value [Integer] the value : LOW or HIGH
   # @raise [NotOutMode] if the pin isn't in OUT mode
   # @raise [BadValue] if the provided value isn't LOW or HIGH
-  def set_value(v)
+  def value=(new_value)
     raise NotOutModeError, "error : mode isn't OUT" unless @mode == OUT
-    raise BadValueError, "error : bad pin value" unless v.between? 0,1
+    raise BadValueError, "error : bad pin value" unless new_value.between? 0,1
+
     File.open("#{LIB_PATH}/gpio#{@pin}/value", 'w') do |file|
-      file.write(v)
+      file.write(new_value)
     end
   end
 end

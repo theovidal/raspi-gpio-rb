@@ -100,7 +100,7 @@ pin.mode = GPIO::IN
 To read the pin value, we're going to use the `get_value` method.
 
 ```ruby
-pin.get_value
+pin.value
 
 # Example output : 0
 ```
@@ -120,11 +120,11 @@ The `LOW` and `HIGH` constants are here to let us set them while keeping code cl
 ```ruby
 # Imagine that a LED is connected to our pin.
 
-pin.set_value(GPIO::HIGH)
+pin.value = GPIO::HIGH
 
 # Output : the LED is on
 
-pin.set_value(GPIO::LOW)
+pin.value = GPIO::LOW
 
 # Output : the LED is off
 ```
