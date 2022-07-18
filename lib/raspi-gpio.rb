@@ -15,12 +15,25 @@ class GPIO
   # Shortcut for high pin value (1)
   HIGH = 1
 
+  # Specifies all possible pin values
+  PIN_VALUES = [
+    LOW,
+    HIGH
+  ]
+
   # Shortcut for 'in' pin mode
   IN = 'in'
 
   # Shortcut for 'out' pin mode
   OUT = 'out'
 
+  # Specifies all possible pin modes
+  PIN_MODES = [
+    IN,
+    OUT
+  ]
+
+  # Base error for all other GPIO related errors
   class BaseError < StandardError
   end
 
@@ -62,7 +75,7 @@ class GPIO
   # @param mode [String] pin mode : IN or OUT
   # @raise [UnknownMode] if the mode isn't IN or OUT
   def mode=(new_mode)
-    raise UnknownModeError, "gpio error : unknown mode #{new_mode}" unless new_mode == IN or new_mode == OUT
+    raise UnknownModeError, "gpio error : unknown mode #{new_mode}" unless PIN_MODES.include?(new_mode)
 
     File.open("#{LIB_PATH}/gpio#{@pin}/direction", 'w') do |file|
       file.write(mode)
@@ -86,7 +99,7 @@ class GPIO
   # @raise [BadValue] if the provided value isn't LOW or HIGH
   def value=(new_value)
     raise NotOutModeError, "error : mode isn't OUT" unless @mode == OUT
-    raise BadValueError, "error : bad pin value" unless new_value.between? 0,1
+    raise BadValueError, "error : bad pin value" unless PIN_VALUE.include?(new_value)
 
     File.open("#{LIB_PATH}/gpio#{@pin}/value", 'w') do |file|
       file.write(new_value)
