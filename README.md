@@ -58,7 +58,7 @@ gem build ./raspi-gpio.gemspec
 Finally, install it on your system.
 
 ```bash
-gem install ./raspi-gpio-1.x.x.gem
+gem install ./raspi-gpio-2.x.x.gem
 ```
 
 ## ⌨ Basic interactions
@@ -75,7 +75,7 @@ require 'raspi-gpio'
 
 A GPIO pin is defined with three things :
 
-- a pin number (the number of total pins depend on your Raspberry model)
+- a pin number (the number of total pins depend on your Raspberry model - please, visit the [pinout guide](https://pinout.xyz/))
 - a direction (in or out)
 - a value (low or high)
 
