@@ -15,6 +15,7 @@ This library uses /sys/class/gpio interface to communicate with GPIO pins. It do
   - [Defining a pin](#defining-a-pin)
   - [Reading pin's value](#reading-pins-value)
   - [Outputing a value](#outputing-a-value)
+  - [Cleanup pin](#cleanup-pin)
 - [🔐 License](#-license)
 
 ## 📌 Requirements
@@ -89,7 +90,7 @@ We can use the `OUT` and `IN` constants for the direction.
 pin = GPIO.new(9, GPIO::OUT)
 ```
 
-The direction of a pin can be changed at any point of the code using the `set_mode` method.
+The direction of a pin can be changed at any point of the code using the `mode` property.
 
 ```ruby
 pin.mode = GPIO::IN
@@ -97,7 +98,7 @@ pin.mode = GPIO::IN
 
 ### Reading pin's value
 
-To read the pin value, we're going to use the `get_value` method.
+To read the pin value, we're going to use the `value` property.
 
 ```ruby
 pin.value
@@ -110,7 +111,7 @@ pin.value
 
 ### Outputing a value
 
-To set the value of a pin, the GPIO class has a `set_value` method that can take two values :
+To set the value of a pin, the GPIO class has a `value` property that can take two values :
 
 - 0, no power (low)
 - 1, maximum power (high)
@@ -127,6 +128,15 @@ pin.value = GPIO::HIGH
 pin.value = GPIO::LOW
 
 # Output : the LED is off
+```
+
+### Cleanup pin
+
+It a good practice to unexport the pin once you're done working with it. For
+this, just call a `cleanup` method on the pin's instance:
+
+```ruby
+pin.cleanup
 ```
 
 ## 🔐 License
