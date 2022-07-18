@@ -36,6 +36,8 @@ class GPIO
   class BadValueError < BaseError
   end
 
+  attr_reader :mode
+
   # Initialize the GPIO pin
   #
   # @param pin [Integer] GPIO pin number to use
@@ -59,12 +61,14 @@ class GPIO
   #
   # @param mode [String] pin mode : IN or OUT
   # @raise [UnknownMode] if the mode isn't IN or OUT
-  def set_mode(mode)
-    raise UnknownModeError, "gpio error : unknown mode #{mode}" unless mode == IN or mode == OUT
+  def mode=(new_mode)
+    raise UnknownModeError, "gpio error : unknown mode #{new_mode}" unless new_mode == IN or new_mode == OUT
+
     File.open("#{LIB_PATH}/gpio#{@pin}/direction", 'w') do |file|
       file.write(mode)
     end
-    @mode = mode
+
+    @mode = new_mode
   end
 
   # Read the value of the pin

@@ -92,7 +92,7 @@ pin = GPIO.new(9, GPIO::OUT)
 The direction of a pin can be changed at any point of the code using the `set_mode` method.
 
 ```ruby
-pin.set_mode(GPIO::IN)
+pin.mode = GPIO::IN
 ```
 
 ### Reading pin's value
