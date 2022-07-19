@@ -108,7 +108,7 @@ class GPIO
   def value=(new_value)
     raise NotExportedError, "error : pin was already cleaned up" unless exported
     raise NotOutModeError, "error : mode isn't OUT" unless @mode == OUT
-    raise BadValueError, "error : bad pin value" unless PIN_VALUE.include?(new_value)
+    raise BadValueError, "error : bad pin value" unless PIN_VALUES.include?(new_value)
 
     File.open("#{LIB_PATH}/gpio#{@pin}/value", 'w') do |file|
       file.write(new_value)

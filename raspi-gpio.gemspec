@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'raspi-gpio'
-  s.version     = '2.0.0'
+  s.version     = '2.0.1'
   s.license     = 'MIT'
   s.summary     = "🔌 Simple & light Raspberry Pi GPIO interface."
   s.description = "A simple and light interface to interact with GPIO pins of the Raspberry Pi."
