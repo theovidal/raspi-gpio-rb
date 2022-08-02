@@ -82,6 +82,8 @@ class RaspiPWM
 
     unexport_channel
     export_channel
+
+    @enabled = false
   end
 
   # Sets a new frequency value
@@ -128,6 +130,7 @@ class RaspiPWM
   def cleanup
     return unless exported
 
+    enabled = false
     unexport_channel
   end
 
