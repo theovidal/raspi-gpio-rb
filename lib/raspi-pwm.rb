@@ -82,7 +82,6 @@ class RaspiPWM
 
     unexport_channel
     export_channel
-    write_pwm_parameters
   end
 
   # Sets a new frequency value
