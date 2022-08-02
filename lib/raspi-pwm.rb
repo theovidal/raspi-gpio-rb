@@ -138,7 +138,7 @@ class RaspiPWM
   def calculate_ns
     period_sec = 1 / frequency.to_f
     @period_ns = (period_sec * 10**9).round
-    @duty_cycle_ns = (@period_ns * (duty_cycle / 100)).round
+    @duty_cycle_ns = (@period_ns * (duty_cycle / 100.0)).round
   end
 
   def write_pwm_parameters
