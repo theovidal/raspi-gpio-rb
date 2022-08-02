@@ -142,6 +142,27 @@ class RaspiPWM
   end
 
   def write_pwm_parameters
+    # The duty_cycle must always be lower than period. If initializing the PWM
+    # only once we're good, but if we'd like to change values over time there
+    # will be cases when we set the period value which is lower then the duty
+    # cycle one and vise versa.
+    # Hence, in order to eliminate any issues (🤞) we want to run the next
+    # sequence of commands:
+    # 1. disable PWM
+    # 2. set the duty cycle to 0 (zero)
+    # 3. set the period with a new value
+    # 4. set the duty cycle with a new value
+    # 5. enable PWM again
+    #
+    # In this case, we ensure that the duty cycle is always lower than period
+
+    was_enabled_before = enabled
+    enabled = false if was_enabled_before
+
+    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/duty_cycle", 'w') do |file|
+      file.write(0)
+    end
+
     File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/period", 'w') do |file|
       file.write(period_ns)
     end
@@ -149,6 +170,8 @@ class RaspiPWM
     File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/duty_cycle", 'w') do |file|
       file.write(duty_cycle_ns)
     end
+
+    enabled = true if was_enabled_before
   end
 
   def verify_chip!
