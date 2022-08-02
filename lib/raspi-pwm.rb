@@ -39,7 +39,7 @@ class RaspiPWM
   attr_reader :duty_cycle
 
   # Indicates whether the PWM is enabled or not
-  attr_reader :enabled?
+  attr_reader :enabled
 
   # Base error for all other PWM related errors
   class BaseError < StandardError
@@ -69,7 +69,7 @@ class RaspiPWM
   # @param channel [Integer] a number of a channel
   # @raise [UnknownChipError] if trying to initialize with the wrong chip number
   # @raise [UnknownChannelError] if trying to initialize with the wrong channel number
-  def init(chip: 0, channel:)
+  def initialize(chip: 0, channel:)
     @chip = chip
     @channel = channel.to_i
 
@@ -143,7 +143,7 @@ class RaspiPWM
 
   def calculate_ns
     period_sec = 1 / frequency.to_f
-    @period_ns = (period_sec * 10^9).round
+    @period_ns = (period_sec * 10**9).round
     @duty_cycle_ns = (@period_ns * (duty_cycle / 100)).round
   end
 
@@ -170,7 +170,7 @@ class RaspiPWM
     File.open("#{LIB_PATH}/pwmchip#{chip}/unexport", 'w') do |file|
       file.write(channel)
     end
-  rescue Errno::EINVAL
+  rescue Errno::ENODEV
     # Do nothing - the channel is already unexported
   ensure
     @exported = false
