@@ -73,6 +73,9 @@ class RaspiPWM
     @chip = chip
     @channel = channel.to_i
 
+    @chip_path = "#{LIB_PATH}/pwmchip#{chip}"
+    @channel_path = "#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}"
+
     verify_chip!
     verify_channel!
 
@@ -121,7 +124,7 @@ class RaspiPWM
 
     @enabled = value
 
-    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/enable", 'w') do |file|
+    File.open("#{channel_path}/enable", 'w') do |file|
       file.write(@enabled.to_i)
     end
   end
@@ -137,6 +140,7 @@ class RaspiPWM
   private
 
   attr_reader :chip, :channel, :exported, :period_ns, :duty_cycle_ns
+  attr_reader :chip_path, :channel_path
 
   def calculate_ns
     period_sec = 1 / frequency.to_f
@@ -162,15 +166,15 @@ class RaspiPWM
     was_enabled_before = enabled
     enabled = false if was_enabled_before
 
-    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/duty_cycle", 'w') do |file|
+    File.open("#{channel_path}/duty_cycle", 'w') do |file|
       file.write(0)
     end
 
-    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/period", 'w') do |file|
+    File.open("#{channel_path}/period", 'w') do |file|
       file.write(period_ns)
     end
 
-    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/duty_cycle", 'w') do |file|
+    File.open("#{channel_path}/duty_cycle", 'w') do |file|
       file.write(duty_cycle_ns)
     end
 
@@ -178,7 +182,7 @@ class RaspiPWM
   end
 
   def verify_chip!
-    return if Dir.exist?("#{LIB_PATH}/pwmchip#{chip}")
+    return if Dir.exist?(chip_path)
 
     raise UnknownChipError, "Unknown PWM chip detected: `#{chip}`!"
   end
@@ -192,12 +196,12 @@ class RaspiPWM
   end
 
   def available_pwm_channels
-    npwm = File.open("#{LIB_PATH}/pwmchip#{chip}/npwm", 'r').read.to_i
+    npwm = File.open("#{chip_path}/npwm", 'r').read.to_i
     (0..npwm - 1).to_a
   end
 
   def unexport_channel
-    File.open("#{LIB_PATH}/pwmchip#{chip}/unexport", 'w') do |file|
+    File.open("#{chip_path}/unexport", 'w') do |file|
       file.write(channel)
     end
   rescue Errno::ENODEV
@@ -207,7 +211,7 @@ class RaspiPWM
   end
 
   def export_channel
-    File.open("#{LIB_PATH}/pwmchip#{chip}/export", 'w') do |file|
+    File.open("#{chip_path}/export", 'w') do |file|
       file.write(channel)
     end
     @exported = true
