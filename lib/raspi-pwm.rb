@@ -82,6 +82,7 @@ class RaspiPWM
 
     unexport_channel
     export_channel
+    write_pwm_parameters
   end
 
   # Sets a new frequency value
@@ -93,10 +94,7 @@ class RaspiPWM
 
     @frequency = new_frequency
     calculate_ns
-
-    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/period", 'w') do |file|
-      file.write(period_ns)
-    end
+    write_pwm_parameters
   end
 
   # Sets a new duty cycle
@@ -110,10 +108,7 @@ class RaspiPWM
 
     @duty_cycle = new_duty_cycle
     calculate_ns
-
-    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/duty_cycle", 'w') do |file|
-      file.write(duty_cycle_ns)
-    end
+    write_pwm_parameters
   end
 
   # Sets an enableness status of a PWM channel
@@ -145,6 +140,16 @@ class RaspiPWM
     period_sec = 1 / frequency.to_f
     @period_ns = (period_sec * 10**9).round
     @duty_cycle_ns = (@period_ns * (duty_cycle / 100)).round
+  end
+
+  def write_pwm_parameters
+    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/period", 'w') do |file|
+      file.write(period_ns)
+    end
+
+    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/duty_cycle", 'w') do |file|
+      file.write(duty_cycle_ns)
+    end
   end
 
   def verify_chip!
