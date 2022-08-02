@@ -12,6 +12,18 @@ module BoolToInteger
   end
 end
 
+# A simple wrapper around the hardware PWM interface
+#
+# For details, see the kernel documentation[https://www.kernel.org/doc/Documentation/pwm.txt]
+#
+# @author sergio1990
+#
+# @example Common usage
+#   pwm = RaspiPWM.new(channel: 0)
+#   pwm.frequency = 100
+#   pwm.duty_cycle = 75
+#   pwm.enabled = true
+#
 class RaspiPWM
   using BoolToInteger
 
@@ -33,6 +45,10 @@ class RaspiPWM
   class BaseError < StandardError
   end
 
+  # Exception when trying to initialize with an unknown PWM chip
+  class UnknownChipError < BaseError
+  end
+
   # Exception when trying to initialize with an unknown PWM channel
   class UnknownChannelError < BaseError
   end
@@ -49,11 +65,15 @@ class RaspiPWM
 
   # Initializes a PWM channel
   #
+  # @param chip [Integer] a number of a PWM chip, default is 0
   # @param channel [Integer] a number of a channel
+  # @raise [UnknownChipError] if trying to initialize with the wrong chip number
   # @raise [UnknownChannelError] if trying to initialize with the wrong channel number
-  def init(channel:)
+  def init(chip: 0, channel:)
+    @chip = chip
     @channel = channel.to_i
 
+    verify_chip!
     verify_channel!
 
     @frequency = 2
@@ -66,7 +86,7 @@ class RaspiPWM
 
   # Sets a new frequency value
   #
-  # @param new_frequency [Integer] a new frequency value
+  # @param new_frequency [Integer] a value in amount of Hz
   # @raise [NotExportedError] if the channel was already cleaned up
   def frequency=(new_frequency)
     raise NotExportedError, "the channel was already unexported" unless exported
@@ -74,7 +94,7 @@ class RaspiPWM
     @frequency = new_frequency
     calculate_ns
 
-    File.open("#{LIB_PATH}/pwmchip0/pwm#{channel}/period", 'w') do |file|
+    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/period", 'w') do |file|
       file.write(period_ns)
     end
   end
@@ -91,7 +111,7 @@ class RaspiPWM
     @duty_cycle = new_duty_cycle
     calculate_ns
 
-    File.open("#{LIB_PATH}/pwmchip0/pwm#{channel}/duty_cycle", 'w') do |file|
+    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/duty_cycle", 'w') do |file|
       file.write(duty_cycle_ns)
     end
   end
@@ -105,7 +125,7 @@ class RaspiPWM
 
     @enabled = value
 
-    File.open("#{LIB_PATH}/pwmchip0/pwm#{channel}/enable", 'w') do |file|
+    File.open("#{LIB_PATH}/pwmchip#{chip}/pwm#{channel}/enable", 'w') do |file|
       file.write(@enabled.to_i)
     end
   end
@@ -119,12 +139,18 @@ class RaspiPWM
 
   private
 
-  attr_reader :channel, :exported, :period_ns, :duty_cycle_ns
+  attr_reader :chip, :channel, :exported, :period_ns, :duty_cycle_ns
 
   def calculate_ns
     period_sec = 1 / frequency.to_f
     @period_ns = (period_sec * 10^9).round
     @duty_cycle_ns = (@period_ns * (duty_cycle / 100)).round
+  end
+
+  def verify_chip!
+    return if Dir.exist?("#{LIB_PATH}/pwmchip#{chip}")
+
+    raise UnknownChipError, "Unknown PWM chip detected: `#{chip}`!"
   end
 
   def verify_channel!
@@ -136,12 +162,12 @@ class RaspiPWM
   end
 
   def available_pwm_channels
-    npwm = File.open("#{LIB_PATH}/pwmchip0/npwm", 'r').read.to_i
+    npwm = File.open("#{LIB_PATH}/pwmchip#{chip}/npwm", 'r').read.to_i
     (0..npwm - 1).to_a
   end
 
   def unexport_channel
-    File.open("#{LIB_PATH}/pwmchip0/unexport", 'w') do |file|
+    File.open("#{LIB_PATH}/pwmchip#{chip}/unexport", 'w') do |file|
       file.write(channel)
     end
   rescue Errno::EINVAL
@@ -151,7 +177,7 @@ class RaspiPWM
   end
 
   def export_channel
-    File.open("#{LIB_PATH}/pwmchip0/export", 'w') do |file|
+    File.open("#{LIB_PATH}/pwmchip#{chip}/export", 'w') do |file|
       file.write(channel)
     end
     @exported = true
