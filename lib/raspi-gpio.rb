@@ -65,14 +65,14 @@ class GPIO
   #
   # @param pin [Integer] GPIO pin number to use
   # @param mode [String] pin mode : IN or OUT
-  def initialize(pin, mode = OUT)
+  def initialize(pin, _mode = OUT)
     @pin = pin
 
     unexport_pin
     export_pin
-
-    @mode = mode
     @exported = true
+
+    self.mode = _mode
   end
 
   # Set the pin mode
